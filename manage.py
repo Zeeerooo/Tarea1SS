@@ -1,16 +1,13 @@
-from flask.ext.script import Manager
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask.ext.script import Manager, Server
 from flask_migrate import Migrate, MigrateCommand
+from T1SS import app, db
 
-app = Flask(__name__)
-app.config.from_object('config.DevelopmentConfig')
-db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
+manager.add_command('runserver', Server(threaded=True))
 
 if __name__ == "__main__":
     manager.run()
