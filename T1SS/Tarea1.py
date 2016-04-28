@@ -36,8 +36,8 @@ def invCbcMac(cif: bytes, key: bytes) -> str:
     return decryptor.update(cif) + decryptor.finalize()
 
 
-text = "texto de pruebastexto de pruebas"
-key = os.urandom(32)
+text = "texto de pruebas"
+key = os.urandom(16)
 a = CbcMac(text, key)
 print(a)
 print(invCbcMac(a, key))
