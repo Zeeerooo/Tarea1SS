@@ -4,6 +4,7 @@ from T1SS.static.people import people
 from T1SS import app, db
 from sqlalchemy.exc import IntegrityError
 import os
+from flask import render_template
 
 migrate = Migrate(app, db)
 
@@ -11,10 +12,6 @@ manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
 manager.add_command('runserver', Server(threaded=True))
-
-if __name__ == "__main__":
-    manager.run()
-
 
 @manager.command
 def populate():
@@ -34,3 +31,15 @@ def populate():
                     db.session.commit()
                 except IntegrityError:
                     db.session.rollback()
+
+
+@app.route('/tester')
+def tester():
+    return render_template('tester.html')
+
+@app.route('/validator')
+def validator():
+    return render_template('validator.html')
+
+if __name__ == "__main__":
+    manager.run()

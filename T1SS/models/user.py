@@ -8,8 +8,7 @@ class User(db.Model):
     aes_key = db.Column(db.String(150), unique=True)
     validated = db.Column(db.Boolean)
 
-    def __init__(self, id, user_name=None, aes_key=None):
-        self.id = id
+    def __init__(self, user_name=None, aes_key=None):
         self.user_name = user_name
         self.aes_key = aes_key
         self.validated = False
