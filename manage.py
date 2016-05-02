@@ -1,10 +1,10 @@
 from flask.ext.script import Manager, Server
-from flask_migrate import Migrate, MigrateCommand
-from T1SS.static.people import people
-from T1SS import app, db
-from sqlalchemy.exc import IntegrityError
+
 import os
-from flask import render_template
+from T1SS import app, db
+from T1SS.static.people import people
+from flask_migrate import Migrate, MigrateCommand
+from sqlalchemy.exc import IntegrityError
 
 migrate = Migrate(app, db)
 
@@ -12,6 +12,7 @@ manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
 manager.add_command('runserver', Server(threaded=True))
+
 
 @manager.command
 def populate():
@@ -33,13 +34,7 @@ def populate():
                     db.session.rollback()
 
 
-@app.route('/tester')
-def tester():
-    return render_template('tester.html')
-
-@app.route('/validator')
-def validator():
-    return render_template('validator.html')
+from T1SS import public
 
 if __name__ == "__main__":
     manager.run()

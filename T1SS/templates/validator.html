@@ -1,14 +1,38 @@
 {% extends "base.html" %}
 {% block title %}Validator{% endblock %}
 {% block head %}
-    {{ super() }}
-    <style type="text/css">
-        .important { color: #336699; }
-    </style>
+{{ super() }}
+<style type="text/css">
+    .important { color: #336699; }
+</style>
 {% endblock %}
 {% block content %}
-    <h1>Validator</h1>
-    <p class="important">
-      Welcome to my awesome homepage.
-    </p>
+<h1>Validator</h1>
+<p> Ingrese su nombre de Usuario, texto y etiqueta supuestamente valida. </p>
+<p> Recibirá una respuesta respecto a la etiqueta ingresada.</p>
+<p> El texto debe ser texto plano de un largo múltiplo de 16.</p>
+{% if form %}
+
+<form action="{{ url_for('validator') }}" method=post>
+    <dl>
+        <dt>Username:
+        <dd><input type=text name=user_name>
+        <dt>Text:
+        <dd><input type=text name=text>
+        <dt>Mac:
+        <dd><input type=text name=tag>
+        <dd><input type=submit value=Submit>
+    </dl>
+</form>
+
+{% endif %}
+
+{% if error %}
+<p class=error><strong>Error:</strong></p>{{ error }}
+{% endif %}
+
+{% for message in get_flashed_messages() %}
+<div class=flash>{{ message }}</div>
+{% endfor %}
+
 {% endblock %}
