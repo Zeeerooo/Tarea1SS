@@ -15,3 +15,5 @@ class User(db.Model):
 
     def validateHomework(self):
         self.validated = True
+        db.session.add(self)
+        db.session.commit()

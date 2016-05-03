@@ -18,7 +18,8 @@ people = '''
 	{"user_name": "crojas"},
 	{"user_name": "nsalas"},
 	{"user_name": "swiche"},
-	{"user_name": "twolf"}	
+	{"user_name": "twolf"},
+	{"user_name": "test"}
 
 ]
 }

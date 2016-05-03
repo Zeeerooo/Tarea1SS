@@ -7,32 +7,32 @@
 </style>
 {% endblock %}
 {% block content %}
+<div style="text-align:right"><a href="{{ url_for('tester') }}">Ir al Tester</a></div>
 <h1>Validator</h1>
 <p> Ingrese su nombre de Usuario, texto y etiqueta supuestamente valida. </p>
 <p> Recibirá una respuesta respecto a la etiqueta ingresada.</p>
 <p> El texto debe ser texto plano de un largo múltiplo de 16.</p>
 {% if form %}
-
 <form action="{{ url_for('validator') }}" method=post>
-    <dl>
-        <dt>Username:
-        <dd><input type=text name=user_name>
-        <dt>Text:
-        <dd><input type=text name=text>
-        <dt>Mac:
-        <dd><input type=text name=tag>
-        <dd><input type=submit value=Submit>
-    </dl>
+    {% for field in form %}
+    <!--<dt>{{ field.label }}-->
+    <div>{{ field }}
+        {% if field.errors %}
+        {% for error in field.errors %}
+        <div class="isa_error">
+            {{ error }}
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    {% endfor %}
+    <div><input type=submit value=Validar></div>
 </form>
 
 {% endif %}
 
-{% if error %}
-<p class=error><strong>Error:</strong></p>{{ error }}
-{% endif %}
-
 {% for message in get_flashed_messages() %}
-<div class=flash>{{ message }}</div>
+<div class=isa_success>{{ message }}</div>
 {% endfor %}
 
 {% endblock %}

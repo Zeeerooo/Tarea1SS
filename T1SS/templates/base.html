@@ -3,14 +3,16 @@
 <head>
     {% block head %}
     <link rel="stylesheet" href="static/style.css"/>
+    <link href='static/fonts/Oswald.css' rel='stylesheet' type='text/css'>
+    <link href='static/fonts/OpenSans.css' rel='stylesheet' type='text/css'>
     <title>{% block title %}{% endblock %} - Tarea1</title>
     {% endblock %}
 </head>
 <body>
-    <div id="content">{% block content %}{% endblock %}</div>
-    <div id="footer">
-        {% block footer %}
-        {% endblock %}
-    </div>
+<div class="wrapper">{% block content %}{% endblock %}</div>
+<div id="footer">
+    {% block footer %}
+    {% endblock %}
+</div>
 </body>
 </html>

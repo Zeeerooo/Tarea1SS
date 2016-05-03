@@ -12,7 +12,9 @@ def tester():
     if request.method == 'POST' and form.validate():
         user = User.query.filter(User.user_name == form.user_name.data).first()
         if not user:
-            flash("Usuario no registrado")
+            error = "Usuario no registrado"
+            form.user_name.errors.append(error)
+            return render_template('tester.html', form=form)
         else:
             # Revisar si texto es múltiple de 16
             key = eval(user.aes_key)
@@ -20,28 +22,42 @@ def tester():
             flash("IV: " + str(iv))
             flash("Cifrado: " + str(c))
             flash("Mac: " + str(CbcMac(form.text.data, key)))
-        return redirect(url_for('tester'))
+            return redirect(url_for('tester'))
     else:
         return render_template('tester.html', form=form)
 
 
-@app.route('/validator')
+@app.route('/validator', methods=['GET', 'POST'])
 def validator():
     form = ValidateForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User.query.filter(User.user_name == form.user_name.data).first()
+        # Crear usuario test para que no peudan robar cosas
         if not user:
-            flash("Usuario no registrado")
+            error = "Usuario no registrado"
+            form.user_name.errors.append(error)
+            return render_template('validator.html', form=form)
         else:
             # Revisar si texto es múltiple de 16
             key = eval(user.aes_key)
-            mac = eval(form.tag)
-            flash("Mac: " + str(CbcMac(form.text.data, key)))
-        return redirect(url_for('tester'))
+            mac = eval(form.tag.data)
+            if CbcMac(form.text.data, key) == mac:
+                flash("¡Falsificación exitosa!")
+                user.validateHomework()
+                return redirect(url_for('.validator'))
+            else:
+                error = "¡Fallaste! Vuelve a intentar"
+                form.tag.errors.append(error)
+                return render_template('validator.html', form=form)
     else:
-        return render_template('validator.html')
+        return render_template('validator.html', form=form)
 
 
 @app.route('/')
 def home():
     return redirect(url_for('tester'))
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
