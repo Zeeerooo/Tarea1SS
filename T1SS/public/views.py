@@ -2,6 +2,7 @@ from T1SS import app
 from T1SS.Tarea1 import CbcMac, AesEcrypt
 from T1SS.forms.tester import TestForm
 from T1SS.forms.validate import ValidateForm
+from T1SS.models.used_word import UsedWord
 from T1SS.models.user import User
 from flask import render_template, redirect, url_for, request, flash
 
@@ -15,13 +16,29 @@ def tester():
             error = "Usuario no registrado"
             form.user_name.errors.append(error)
             return render_template('tester.html', form=form)
+
+        elif user.used_words.count() >= 50:
+            error = "Usted completó la cantidad máxima de consultas."
+            form.user_name.errors.append(error)
+            return render_template('tester.html', form=form)
+
+        elif not len(form.text.data) % 16 == 0:
+            error = "Texto debe ser múltiplo de 16."
+            form.text.errors.append(error)
+            return render_template('tester.html', form=form)
+
         else:
-            # Revisar si texto es múltiple de 16
+            word = form.text.data
             key = eval(user.aes_key)
-            iv, c = AesEcrypt(form.text.data, key)
+            iv, c = AesEcrypt(word, key)
+
+            # Agrego palabra a las ya probadas
+            UsedWord.store_if_no_exist(word, user)
+
             flash("IV: " + str(iv))
             flash("Cifrado: " + str(c))
             flash("Mac: " + str(CbcMac(form.text.data, key)))
+            flash("A usted le quedan " + str(50 - user.used_words.count()) + " consultas")
             return redirect(url_for('tester'))
     else:
         return render_template('tester.html', form=form)
@@ -36,6 +53,16 @@ def validator():
         if not user:
             error = "Usuario no registrado"
             form.user_name.errors.append(error)
+            return render_template('validator.html', form=form)
+
+        elif not len(form.text.data) % 16 == 0:
+            error = "Texto debe ser múltiplo de 16."
+            form.text.errors.append(error)
+            return render_template('validator.html', form=form)
+
+        elif user.used_words.filter(UsedWord.word == form.text.data).first():
+            error = "Usted ya testeo esta palabra!"
+            form.text.errors.append(error)
             return render_template('validator.html', form=form)
         else:
             # Revisar si texto es múltiple de 16

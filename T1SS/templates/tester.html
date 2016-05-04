@@ -9,6 +9,8 @@
 <p> Ingrese su nombre de Usuario y el texto a encriptar. </p>
 <p> Recibirá el texto encriptado, el IV utilizado en la encriptación, y el Tag calculado con CBCMAC.</p>
 <p> El texto debe ser texto plano de un largo múltiplo de 16.</p>
+<h4>Recuerde! Usted sólo cuenta con 50 pruebas distintas.</h4>
+<br>
 {% if form %}
 <form action="{{ url_for('tester') }}" method=post>
     {% for field in form %}

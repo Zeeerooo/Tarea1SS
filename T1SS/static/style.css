@@ -37,6 +37,15 @@ h1{
   margin:0px;
 }
 
+h4{
+  text-align:center;
+  font:15px Oswald;
+  color:#FFF;
+  text-shadow:#000 0px 1px 5px;
+  margin:0px;
+}
+
+
 p{
   text-align:center;
   font:13px Open Sans;

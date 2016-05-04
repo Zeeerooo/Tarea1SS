@@ -7,6 +7,8 @@ class User(db.Model):
     user_name = db.Column(db.String(32), unique=True)
     aes_key = db.Column(db.String(150), unique=True)
     validated = db.Column(db.Boolean)
+    used_words = db.relationship('UsedWord', backref='user',
+                                 lazy='dynamic')
 
     def __init__(self, user_name=None, aes_key=None):
         self.user_name = user_name
