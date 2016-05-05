@@ -12,11 +12,11 @@ def CbcMac(text: str, key: bytes) -> bytes:
     :return: mac del texto
     '''
 
-    bytes = text.encode()
+    #bytes = text.encode()
     init_vector = (0).to_bytes(16, byteorder='big')
     cipher = Cipher(algorithms.AES(key), modes.CBC(init_vector), backend=default_backend())
     encryptor = cipher.encryptor()
-    ct = encryptor.update(bytes) + encryptor.finalize()
+    ct = encryptor.update(text) + encryptor.finalize()
 
     # Entregar últimos 16 bytes
     return ct[-16:]
@@ -30,11 +30,11 @@ def AesEcrypt(text: str, key: bytes):
     :return: encriptación del texto
     '''
 
-    bytes = text.encode()
+    #bytes = text.encode()
     init_vector = os.urandom(16)
     cipher = Cipher(algorithms.AES(key), modes.CBC(init_vector), backend=default_backend())
     encryptor = cipher.encryptor()
-    ct = encryptor.update(bytes) + encryptor.finalize()
+    ct = encryptor.update(text) + encryptor.finalize()
     return init_vector, ct
 
 

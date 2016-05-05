@@ -12,6 +12,7 @@ def tester():
     form = TestForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User.query.filter(User.user_name == form.user_name.data).first()
+        word = eval(form.text.data)
         if not user:
             error = "Usuario no registrado"
             form.user_name.errors.append(error)
@@ -22,22 +23,21 @@ def tester():
             form.user_name.errors.append(error)
             return render_template('tester.html', form=form)
 
-        elif not len(form.text.data) % 16 == 0:
+        elif not len(word) % 16 == 0:
             error = "Texto debe ser múltiplo de 16."
             form.text.errors.append(error)
             return render_template('tester.html', form=form)
 
         else:
-            word = form.text.data
             key = eval(user.aes_key)
             iv, c = AesEcrypt(word, key)
 
             # Agrego palabra a las ya probadas
-            UsedWord.store_if_no_exist(word, user)
+            UsedWord.store_if_no_exist(str(word), user)
 
             flash("IV: " + str(iv))
             flash("Cifrado: " + str(c))
-            flash("Mac: " + str(CbcMac(form.text.data, key)))
+            flash("Mac: " + str(CbcMac(word, key)))
             flash("A usted le quedan " + str(50 - user.used_words.count()) + " consultas")
             return redirect(url_for('tester'))
     else:
@@ -49,18 +49,19 @@ def validator():
     form = ValidateForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User.query.filter(User.user_name == form.user_name.data).first()
+        word = eval(form.text.data)
         # Crear usuario test para que no peudan robar cosas
         if not user:
             error = "Usuario no registrado"
             form.user_name.errors.append(error)
             return render_template('validator.html', form=form)
 
-        elif not len(form.text.data) % 16 == 0:
+        elif not len(word) % 16 == 0:
             error = "Texto debe ser múltiplo de 16."
             form.text.errors.append(error)
             return render_template('validator.html', form=form)
 
-        elif user.used_words.filter(UsedWord.word == form.text.data).first():
+        elif user.used_words.filter(UsedWord.word == str(word)).first():
             error = "Usted ya testeo esta palabra!"
             form.text.errors.append(error)
             return render_template('validator.html', form=form)
@@ -68,7 +69,7 @@ def validator():
             # Revisar si texto es múltiple de 16
             key = eval(user.aes_key)
             mac = eval(form.tag.data)
-            if CbcMac(form.text.data, key) == mac:
+            if CbcMac(word, key) == mac:
                 flash("¡Falsificación exitosa!")
                 user.validateHomework()
                 return redirect(url_for('.validator'))
