@@ -12,7 +12,13 @@ def tester():
     form = TestForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User.query.filter(User.user_name == form.user_name.data).first()
-        word = eval(form.text.data)
+        try:
+            word = eval(form.text.data)
+        except Exception:
+            error = "Texto no está en formato bytes pedido"
+            form.text.errors.append(error)
+            return render_template('tester.html', form=form)
+
         if not user:
             error = "Usuario no registrado"
             form.user_name.errors.append(error)
@@ -35,6 +41,7 @@ def tester():
             # Agrego palabra a las ya probadas
             UsedWord.store_if_no_exist(str(word), user)
 
+            flash("Texto enviado: " + str(word))
             flash("IV: " + str(iv))
             flash("Cifrado: " + str(c))
             flash("Mac: " + str(CbcMac(word, key)))
@@ -49,7 +56,13 @@ def validator():
     form = ValidateForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User.query.filter(User.user_name == form.user_name.data).first()
-        word = eval(form.text.data)
+        try:
+            word = eval(form.text.data)
+        except Exception:
+            error = "Texto no está en formato bytes pedido"
+            form.text.errors.append(error)
+            return render_template('tester.html', form=form)
+
         # Crear usuario test para que no peudan robar cosas
         if not user:
             error = "Usuario no registrado"
@@ -68,7 +81,13 @@ def validator():
         else:
             # Revisar si texto es múltiple de 16
             key = eval(user.aes_key)
-            mac = eval(form.tag.data)
+            try:
+                mac = eval(form.tag.data)
+            except Exception:
+                error = "Texto no está en formato bytes pedido"
+                form.tag.errors.append(error)
+                return render_template('tester.html', form=form)
+
             if CbcMac(word, key) == mac:
                 flash("¡Falsificación exitosa!")
                 user.validateHomework()
