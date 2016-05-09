@@ -19,6 +19,11 @@ def tester():
             form.text.errors.append(error)
             return render_template('tester.html', form=form)
 
+        if not type(word) is bytes:
+            error = "Texto no está en formato bytes pedido"
+            form.text.errors.append(error)
+            return render_template('tester.html', form=form)
+
         if not user:
             error = "Usuario no registrado"
             form.user_name.errors.append(error)
@@ -59,6 +64,11 @@ def validator():
         try:
             word = eval(form.text.data)
         except Exception:
+            error = "Texto no está en formato bytes pedido"
+            form.text.errors.append(error)
+            return render_template('tester.html', form=form)
+
+        if not type(word) is bytes:
             error = "Texto no está en formato bytes pedido"
             form.text.errors.append(error)
             return render_template('tester.html', form=form)
