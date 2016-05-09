@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     {% block head %}
-    <link rel="stylesheet" href="static/style.css"/>
-    <link href='static/fonts/Oswald.css' rel='stylesheet' type='text/css'>
-    <link href='static/fonts/OpenSans.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+    <link href="{{ url_for('static', filename='fonts/Oswald.css') }}" rel='stylesheet' type='text/css'>
+    <link href="{{ url_for('static', filename='fonts/OpenSans.css') }}" rel='stylesheet' type='text/css'>
     <title>{% block title %}{% endblock %} - Tarea1</title>
     {% endblock %}
 </head>
@@ -15,4 +15,4 @@
     {% endblock %}
 </div>
 </body>
-</html>
+</html>exit
